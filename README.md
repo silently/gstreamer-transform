@@ -1,10 +1,10 @@
 # gstreamer-transform
 
-gstreamer-send is a simple WebRTC application that shows how to:
+gstreamer-transform is a simple WebRTC application that shows how to:
 
 - send audio and video from the browser to a pion-WebRTC remote peer
 - transform audio/video through GStreamer
-- display them back in the browser
+- forward them back to the browser
 
 It's mainly a refactor of [gstreamer-send](https://github.com/pion/example-webrtc-applications/tree/master/gstreamer-send), [gstreamer-receive](https://github.com/pion/example-webrtc-applications/tree/master/gstreamer-receive) and [reflect](https://github.com/pion/webrtc/tree/master/examples/reflect) pion example projects.
 
