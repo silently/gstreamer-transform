@@ -32,6 +32,15 @@ This example requires you have GStreamer installed, these are the supported plat
 go build
 ```
 
+### Run with Docker
+
+```
+docker build -t gstreamer-transform:latest .
+docker container run -p 8080:8080 --rm gstreamer-transform:latest
+# or enter the container
+docker container run -p 8080:8080 -it --entrypoint /bin/bash gstreamer-transform:latest
+```
+
 ### Open gstreamer-send example page
 
 Serve the `web/index.html` static page.

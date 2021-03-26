@@ -37,18 +37,8 @@ func main() {
 		fmt.Printf("Connection State has changed %s \n", connectionState.String())
 	})
 
-	// Create a audio track
-	audioTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: "audio/opus"}, "audio", "pion1")
-	if err != nil {
-		panic(err)
-	}
-	_, err = peerConnection.AddTrack(audioTrack)
-	if err != nil {
-		panic(err)
-	}
-
 	// Create a video track that we send video back to browser on
-	videoTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: "video/vp8"}, "video", "pion")
+	videoTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: "video/vp8"}, "video", "pionV")
 	if err != nil {
 		panic(err)
 	}
@@ -84,23 +74,10 @@ func main() {
 				}
 			}
 		}()
+		codecName := strings.Split(track.Codec().RTPCodecCapability.MimeType, "/")[1]
+		fmt.Println(codecName)
 
-		if track.Kind().String() == "audio" {
-			codecName := strings.Split(track.Codec().RTPCodecCapability.MimeType, "/")[1]
-			pipeline := gst.CreatePipeline(codecName, []*webrtc.TrackLocalStaticSample{audioTrack})
-			pipeline.Start()
-
-			buf := make([]byte, 1400)
-			for {
-				i, _, readErr := track.Read(buf)
-				if readErr != nil {
-					panic(err)
-				}
-
-				pipeline.Push(buf[:i])
-			}
-		} else {
-			codecName := strings.Split(track.Codec().RTPCodecCapability.MimeType, "/")[1]
+		if track.Kind().String() == "video" {
 			pipelineVideo := gst.CreatePipeline(strings.ToLower(codecName), []*webrtc.TrackLocalStaticSample{videoTrack})
 			pipelineVideo.Start()
 

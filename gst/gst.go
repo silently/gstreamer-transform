@@ -43,13 +43,15 @@ func CreatePipeline(codecName string, tracks []*webrtc.TrackLocalStaticSample) *
 	pipelineStr := "appsrc format=time is-live=true do-timestamp=true name=src ! application/x-rtp"
 	// suffixPipelineStr := "autoaudiosink"
 	suffixPipelineStr := "appsink name=appsink"
-	audioPipelineStr := "decodebin ! audioconvert ! audioecho delay=500000000 intensity=0.6 feedback=0.4 ! audioconvert"
-	videoPipelineStr := "decodebin ! videoconvert ! warptv ! videoconvert"
+	audioPipelineStr := "decodebin ! audioconvert ! audiochebband mode=band-pass lower-frequency=1000 upper-frequency=3000 poles=4 ! freeverb ! audioconvert"
+	// videoPipelineStr := "decodebin ! videoconvert ! warptv ! videoconvert"
+	videoPipelineStr := "decodebin ! videoconvert"
 	var clockRate float32
 
 	switch codecName {
 	case "vp8":
-		pipelineStr += ", encoding-name=VP8-DRAFT-IETF-01 ! rtpvp8depay ! " + videoPipelineStr + " ! vp8enc error-resilient=partitions keyframe-max-dist=10 auto-alt-ref=true cpu-used=5 deadline=1 ! " + suffixPipelineStr
+		// pipelineStr += ", media=video, clock-rate=90000, encoding-name=VP8-DRAFT-IETF-01, payload=100 ! rtpvp8depay ! vp8dec ! vp8enc error-resilient=partitions keyframe-max-dist=10 auto-alt-ref=true cpu-used=5 deadline=1 ! " + suffixPipelineStr
+		pipelineStr += ", encoding-name=VP8-DRAFT-IETF-01 ! rtpvp8depay ! vp8dec ! vp8enc error-resilient=partitions keyframe-max-dist=10 auto-alt-ref=true cpu-used=5 deadline=1 ! " + suffixPipelineStr
 		clockRate = videoClockRate
 	case "vp9":
 		pipelineStr += " ! rtpvp9depay ! " + videoPipelineStr + " ! vp9enc ! " + suffixPipelineStr
